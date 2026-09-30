@@ -1,0 +1,72 @@
+{
+    "id": "stripe",
+    "name": "Stripe",
+    "version": "1.0.0",
+    "description": "Takes card payments at checkout through Stripe (PaymentIntents, plus Apple Pay/Google Pay via the card element), with a signature-verified webhook to reconcile orders. Appears as a payment provider in Settings > Payments",
+    "author": {
+        "name": "Gavin Cox"
+    },
+    "license": "proprietary",
+
+    "requires": {
+        "osmium": ">=1.0.0",
+        "php": ">=8.1",
+        "services": []
+    },
+
+    "autoload": [
+        "models"
+    ],
+
+    "hooks": {
+        "payment.providers": [
+            "Osmium\\Services\\Stripe\\Models\\StripePaymentProvider::provider"
+        ],
+        "payment.create": [
+            "Osmium\\Services\\Stripe\\Models\\StripePaymentProvider::create"
+        ],
+        "payment.confirm": [
+            "Osmium\\Services\\Stripe\\Models\\StripePaymentProvider::confirm"
+        ]
+    },
+
+    "csp": {
+        "script-src": ["https://js.stripe.com"],
+        "frame-src": ["https://js.stripe.com"]
+    },
+
+    "admin": {
+        "menu": {
+            "section": "Content",
+            "items": [
+                {
+                    "id": "stripe",
+                    "label": "Stripe",
+                    "icon": "bx bx-credit-card",
+                    "route": "admin/settings/stripe",
+                    "activePattern": "admin/settings/stripe",
+                    "role": null
+                }
+            ]
+        },
+        "routes": {
+            "admin/settings/stripe": {
+                "controller": "controllers/StripeController.php",
+                "class": "Osmium\\Services\\Stripe\\Controllers\\StripeController",
+                "method": "index",
+                "title": "Stripe"
+            }
+        }
+    },
+
+    "api": {
+        "routes": {
+            "api/checkout-stripe-webhook": "controllers/stripe-webhook.php"
+        }
+    },
+
+    "setup": {
+        "requiresConnection": true,
+        "postInstallNote": "Stripe is off until configured. Enter your keys on the Stripe settings page, add a webhook endpoint in the Stripe dashboard pointing at /api/checkout-stripe-webhook (events: payment_intent.succeeded, payment_intent.payment_failed, charge.refunded) and paste its signing secret. Then choose Stripe as the Active Checkout Provider in Settings > Payments. Test locally with: stripe listen --forward-to <host>/api/checkout-stripe-webhook"
+    }
+}

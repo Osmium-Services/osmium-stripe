@@ -1,0 +1,80 @@
+<?php $stripe = $admin['stripe']; ?>
+<div class="d-flex justify-content-between align-items-center py-3 mb-4">
+    <h4 class="mb-0">
+        <span class="text-muted fw-light">Services /</span> Stripe
+    </h4>
+    <button type="submit" form="settings-form" class="btn btn-primary">
+        <i class="bx bx-save me-1"></i> Save Settings
+    </button>
+</div>
+
+<?php if ($admin['flash'] ?? null): ?>
+    <div class="alert alert-<?= \htmlspecialchars($admin['flash']['type']) ?> alert-dismissible fade show" role="alert">
+        <?= \htmlspecialchars($admin['flash']['text']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="alert alert-info">
+            <i class="bx bx-info-circle me-1"></i>
+            To take payments with Stripe, also choose <strong>Stripe</strong> as the Active Checkout Provider in
+            <a href="<?= $admin['basePath'] ?>settings/payments/">Settings &gt; Payments</a>.
+        </div>
+
+        <form method="POST" action="<?= $admin['basePath'] ?>settings/stripe/" id="settings-form" autocomplete="off">
+            <input type="hidden" name="token" value="<?= $template['formToken'] ?? '' ?>">
+            <div class="card mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bx bx-credit-card-front me-2"></i>Stripe</h5></div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enabled" name="enabled" <?= $stripe['enabled'] ? 'checked' : '' ?>>
+                            <label class="form-check-label fw-semibold" for="enabled">Enable Stripe</label>
+                        </div>
+                        <div class="form-text">Switches Stripe on for checkout, the webhook, and Apple Pay/Google Pay through the card element. Redirect-based methods (iDEAL, Klarna, Bancontact) aren't supported.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mode" class="form-label fw-semibold">Stripe Mode</label>
+                        <select class="form-select" id="mode" name="mode">
+                            <option value="test" <?= $stripe['mode'] === 'test' ? 'selected' : '' ?>>Test</option>
+                            <option value="live" <?= $stripe['mode'] === 'live' ? 'selected' : '' ?>>Live</option>
+                        </select>
+                    </div>
+
+                    <?php
+                    $fields = [
+                        'test_publishable_key' => ['Test Publishable Key', 'text'],
+                        'test_secret_key' => ['Test Secret Key', 'password'],
+                        'live_publishable_key' => ['Live Publishable Key', 'text'],
+                        'live_secret_key' => ['Live Secret Key', 'password'],
+                        'webhook_signing_secret' => ['Webhook Signing Secret', 'password'],
+                    ];
+                    ?>
+                    <?php foreach ($fields as $name => [$label, $type]): ?>
+                        <div class="mb-3">
+                            <label for="<?= $name ?>" class="form-label fw-semibold"><?= $label ?></label>
+                            <input type="<?= $type ?>" class="form-control" id="<?= $name ?>" name="<?= $name ?>" autocomplete="new-password"
+                                placeholder="<?= $stripe['has'][$name] ? 'Leave blank to keep current' : 'Not set' ?>">
+                        </div>
+                    <?php endforeach; ?>
+
+                    <div class="mb-3">
+                        <label for="statement_descriptor" class="form-label fw-semibold">Statement Descriptor</label>
+                        <input type="text" class="form-control" id="statement_descriptor" name="statement_descriptor"
+                            maxlength="22" value="<?= \htmlspecialchars($stripe['statementDescriptor']) ?>">
+                        <div class="form-text">Shown on the customer's card statement, alongside your Stripe account name. Max 22 characters.</div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label fw-semibold">Webhook endpoint</label>
+                        <input type="text" class="form-control" value="<?= \htmlspecialchars($stripe['webhookUrl']) ?>" readonly>
+                        <div class="form-text">Add this in the Stripe dashboard (events: payment_intent.succeeded, payment_intent.payment_failed, charge.refunded) and paste its signing secret above.</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
