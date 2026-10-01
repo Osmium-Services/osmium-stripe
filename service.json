@@ -1,8 +1,9 @@
 {
     "id": "stripe",
     "name": "Stripe",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Takes card payments at checkout through Stripe (PaymentIntents, plus Apple Pay/Google Pay via the card element), with a signature-verified webhook to reconcile orders. Appears as a payment provider in Settings > Payments",
+    "category": "payments",
     "author": {
         "name": "Gavin Cox"
     },
