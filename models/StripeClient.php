@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Osmium\Services\Stripe\Models;
 
+use Osmium\Core\Library\StoreFinance;
+
 use Osmium\Modules\Checkout\Services\ShopPaymentException;
 
 require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
@@ -83,12 +85,13 @@ class StripeClient
      *
      * @param array $order Stored order row (order_ref, addresses, name, totals)
      * @param array $totals Server-computed totals
+     * @param StoreFinance $finance The store's country: every order ships there (UK-only for now)
      * @return array{id: string, client_secret: string}
      * @throws ShopPaymentException
      */
-    public function createPaymentIntent(array $order, array $totals): array
+    public function createPaymentIntent(array $order, array $totals, StoreFinance $finance): array
     {
-        $currency = (string)($order['currency'] ?? 'GBP');
+        $currency = (string)$order['currency'];
         $amount = (float)$order['total_inc_tax'];
 
         $body = [
@@ -122,7 +125,7 @@ class StripeClient
                     'city' => $this->truncate((string)$order['delivery_city'], 350),
                     'state' => $this->truncate((string)($order['delivery_county'] ?? ''), 350) ?: null,
                     'postal_code' => (string)$order['delivery_postcode'],
-                    'country' => 'GB',
+                    'country' => $finance->country(),
                 ], fn($v) => $v !== null),
             ],
         ];

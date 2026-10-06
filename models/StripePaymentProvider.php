@@ -42,7 +42,8 @@ class StripePaymentProvider
         if ($notOurs) return null;
 
         $client = StripeConfig::client();
-        $intent = $client->createPaymentIntent(order: $payload['order'], totals: $payload['totals']);
+        $finance = $payload['osmium']->finance();
+        $intent = $client->createPaymentIntent(order: $payload['order'], totals: $payload['totals'], finance: $finance);
 
         return [
             'ref' => $intent['id'],
