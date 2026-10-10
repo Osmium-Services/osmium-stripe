@@ -1,7 +1,7 @@
 {
     "id": "stripe",
     "name": "Stripe",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Takes card payments at checkout through Stripe (PaymentIntents, plus Apple Pay/Google Pay via the card element), with a signature-verified webhook to reconcile orders. Appears as a payment provider in Settings > Payments",
     "category": "payments",
     "author": {
@@ -12,7 +12,8 @@
     "requires": {
         "osmium": ">=1.0.0",
         "php": ">=8.1",
-        "services": []
+        "services": [],
+        "shop": true
     },
 
     "autoload": [
