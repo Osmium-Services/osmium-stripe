@@ -135,7 +135,11 @@ switch ($eventType) {
         break;
 
     case 'payment_intent.payment_failed':
-        $orderService->markStatus(orderId: $orderId, status: 'failed');
+        // Not terminal: a PaymentIntent stays usable after a decline, so the
+        // customer can retry on the same checkout. Marking the order failed here
+        // would block markPaid when that retry succeeds. An abandoned order stays
+        // pending.
+        \error_log("Stripe payment attempt failed for order {$order['order_ref']}; left pending for a retry");
         break;
 
     case 'charge.refunded':
