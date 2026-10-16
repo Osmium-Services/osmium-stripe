@@ -1,6 +1,7 @@
 <?php
 
 use Osmium\Services\Stripe\Models\StripeConfig;
+use Osmium\Services\Stripe\Models\StripeRefund;
 use Osmium\Modules\Checkout\Models\CheckoutBasket;
 use Osmium\Modules\Checkout\Models\CheckoutDiscount;
 use Osmium\Modules\Checkout\Models\CheckoutOrder;
@@ -143,6 +144,13 @@ switch ($eventType) {
         break;
 
     case 'charge.refunded':
+        // Stripe sends this for a partial refund too. Only a full refund changes the order's status.
+        $isFullRefund = StripeRefund::isFull($object);
+        if (!$isFullRefund) {
+            \error_log("Stripe partial refund on order {$order['order_ref']}: " . (int)($object['amount_refunded'] ?? 0) . " of " . (int)($object['amount'] ?? 0) . " (minor units); status left as it is");
+            break;
+        }
+
         $orderService->markStatus(orderId: $orderId, status: 'refunded'); // Recorded, not executed — refunds are issued in Stripe
         break;
 
