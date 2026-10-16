@@ -1,8 +1,12 @@
 <?php
 
 use Osmium\Services\Stripe\Models\StripeConfig;
+use Osmium\Modules\Checkout\Models\CheckoutBasket;
+use Osmium\Modules\Checkout\Models\CheckoutDiscount;
+use Osmium\Modules\Checkout\Models\CheckoutOrder;
 use Osmium\Modules\Checkout\Services\CheckoutBasketService;
 use Osmium\Modules\Checkout\Services\ShopOrderMailer;
+use Osmium\Modules\Checkout\Services\ShopDiscountService;
 use Osmium\Modules\Checkout\Services\ShopOrderService;
 use Osmium\Modules\Checkout\Services\ShopTotalsService;
 
@@ -12,6 +16,11 @@ require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderException.p
 require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderService.php';
 require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderMailer.php';
 require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
+require_once __DIR__ . '/../../../modules/checkout/services/ShopDiscountService.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutModel.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutBasket.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutDiscount.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutOrder.php';
 
 /**
  * Stripe webhook.
@@ -61,15 +70,14 @@ $event = \json_decode(json: (string)$rawBody, associative: true) ?? [];
 $eventType = (string)($event['type'] ?? '');
 $object = $event['data']['object'] ?? [];
 
-$sqlDir = 'app/modules/checkout/models/sql/';
-
 $finance = $this->osmium->finance();
-$basketService = new CheckoutBasketService(dataSource: $this->osmium->dataSource, sqlDir: $sqlDir);
+$discountService = new ShopDiscountService(new CheckoutDiscount($this->osmium->dataSource, 'discounts'));
+$basketService = new CheckoutBasketService(new CheckoutBasket($this->osmium->dataSource, 'checkout_baskets'));
 $orderService = new ShopOrderService(
-    dataSource: $this->osmium->dataSource,
-    sqlDir: $sqlDir,
+    orders: new CheckoutOrder($this->osmium->dataSource, 'shop_orders'),
     basket: $basketService,
-    totals: ShopTotalsService::fromConfig($this->osmium->config->checkout, $finance),
+    totals: ShopTotalsService::fromConfig($this->osmium->config->checkout, $finance, discounts: $discountService),
+    discounts: $discountService,
     finance: $finance,
 );
 
