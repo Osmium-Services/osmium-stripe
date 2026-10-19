@@ -42,7 +42,7 @@ class StripePaymentProvider
         if ($notOurs) return null;
 
         $client = StripeConfig::client();
-        $finance = $payload['osmium']->finance();
+        $finance = \Osmium\Core\Library\StoreFinance::forOsmium($payload['osmium']);
         $intent = $client->createPaymentIntent(order: $payload['order'], totals: $payload['totals'], finance: $finance);
 
         return [

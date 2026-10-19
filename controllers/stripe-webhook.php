@@ -71,7 +71,7 @@ $event = \json_decode(json: (string)$rawBody, associative: true) ?? [];
 $eventType = (string)($event['type'] ?? '');
 $object = $event['data']['object'] ?? [];
 
-$finance = $this->osmium->finance();
+$finance = \Osmium\Core\Library\StoreFinance::forOsmium($this->osmium);
 $discountService = new ShopDiscountService(new CheckoutDiscount($this->osmium->dataSource, 'discounts'));
 $basketService = new CheckoutBasketService(new CheckoutBasket($this->osmium->dataSource, 'checkout_baskets'));
 $orderService = new ShopOrderService(
