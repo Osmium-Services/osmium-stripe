@@ -11,17 +11,17 @@ use Osmium\Modules\Checkout\Services\ShopDiscountService;
 use Osmium\Modules\Checkout\Services\ShopOrderService;
 use Osmium\Modules\Checkout\Services\ShopTotalsService;
 
-require_once __DIR__ . '/../../../modules/checkout/services/ShopTotalsService.php';
-require_once __DIR__ . '/../../../modules/checkout/services/CheckoutBasketService.php';
-require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderException.php';
-require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderService.php';
-require_once __DIR__ . '/../../../modules/checkout/services/ShopOrderMailer.php';
-require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
-require_once __DIR__ . '/../../../modules/checkout/services/ShopDiscountService.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutModel.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutBasket.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutDiscount.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutOrder.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopTotalsService.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutBasketService.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopOrderException.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopOrderService.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopOrderMailer.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopPaymentException.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopDiscountService.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutModel.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutBasket.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutDiscount.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutOrder.php';
 
 /**
  * Stripe webhook.

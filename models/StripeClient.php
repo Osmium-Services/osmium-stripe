@@ -8,7 +8,7 @@ use Osmium\Core\Library\StoreFinance;
 
 use Osmium\Modules\Checkout\Services\ShopPaymentException;
 
-require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopPaymentException.php';
 
 /**
  * StripeClient
