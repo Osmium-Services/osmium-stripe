@@ -28,6 +28,10 @@ class StripePaymentProvider
             'frontend' => ['publishableKey' => $client->publishableKey()], // Public by design
             'settingsRoute' => 'settings/stripe/',
             'logo' => '/assets/services/stripe/logo.png', // Shown next to the order in admin
+            'paymentUrl' => [ // The logo links here; {order_ref} is the PaymentIntent id
+                'test' => 'https://dashboard.stripe.com/test/payments/{order_ref}',
+                'live' => 'https://dashboard.stripe.com/payments/{order_ref}',
+            ],
         ];
     }
 
