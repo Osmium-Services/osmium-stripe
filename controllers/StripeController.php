@@ -51,11 +51,33 @@ class StripeController extends AdminController
                 self::SECRET_FIELDS,
             ),
             'webhookUrl' => $this->webhookUrl(),
+            'missingForCheckout' => $this->missingForCheckout($config),
         ];
         $this->data['admin']['flash'] = $_SESSION[self::FLASH_KEY] ?? null;
         unset($_SESSION[self::FLASH_KEY]);
 
         $this->setView('stripe/index.phtml');
+    }
+
+    /**
+     * Labels of the keys the current mode needs before Stripe counts as ready in
+     * Settings > Payments (see StripeClient::isEnabled).
+     *
+     * @return string[]
+     */
+    private function missingForCheckout(array $config): array
+    {
+        $needed = $config['mode'] === 'live'
+            ? ['livePublishableKey' => 'Live Publishable Key', 'liveSecretKey' => 'Live Secret Key']
+            : ['testPublishableKey' => 'Test Publishable Key', 'testSecretKey' => 'Test Secret Key'];
+
+        $missing = [];
+        foreach ($needed as $configKey => $label)
+        {
+            if ($config[$configKey] === '') $missing[] = $label;
+        }
+
+        return $missing;
     }
 
     private function handleSubmit(): void

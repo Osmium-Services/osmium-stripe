@@ -23,6 +23,14 @@
             <a href="<?= $admin['basePath'] ?>settings/payments/">Settings &gt; Payments</a>.
         </div>
 
+        <?php if ($stripe['missingForCheckout']): ?>
+            <div class="alert alert-warning">
+                <i class="bx bx-error me-1"></i>
+                Stripe won't show as ready in Settings &gt; Payments until these are saved:
+                <strong><?= \htmlspecialchars(\implode(', ', $stripe['missingForCheckout'])) ?></strong>.
+            </div>
+        <?php endif; ?>
+
         <form method="POST" action="<?= $admin['basePath'] ?>settings/stripe/" id="settings-form" autocomplete="off">
             <input type="hidden" name="token" value="<?= $template['formToken'] ?? '' ?>">
             <div class="card mb-4">
