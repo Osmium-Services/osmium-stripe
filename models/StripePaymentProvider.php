@@ -27,6 +27,7 @@ class StripePaymentProvider
             'ready' => $client->isEnabled(),
             'frontend' => ['publishableKey' => $client->publishableKey()], // Public by design
             'settingsRoute' => 'settings/stripe/',
+            'logo' => '/assets/services/stripe/logo.png', // Shown next to the order in admin
         ];
     }
 
