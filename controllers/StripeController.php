@@ -43,6 +43,8 @@ class StripeController extends AdminController
         $config = (array) StripeConfig::get();
 
         $this->data['admin']['stripe'] = [
+            'supportedMethods' => StripeConfig::SUPPORTED_METHODS,
+            'acceptedMethods' => StripeConfig::acceptedMethods(),
             'enabled' => (bool) $config['enabled'],
             'mode' => $config['mode'],
             'statementDescriptor' => $config['statementDescriptor'],
@@ -102,6 +104,7 @@ class StripeController extends AdminController
 
         $mode = \trim((string) ($_POST['mode'] ?? 'test'));
         $values['enabled'] = isset($_POST['enabled']);
+        $values['acceptedMethods'] = \array_values(\array_intersect(\array_keys(StripeConfig::SUPPORTED_METHODS), (array) ($_POST['accepted_methods'] ?? [])));
         $values['mode'] = $mode === 'live' ? 'live' : 'test';
         $values['statementDescriptor'] = \mb_substr(string: \trim((string) ($_POST['statement_descriptor'] ?? '')), start: 0, length: 22);
 

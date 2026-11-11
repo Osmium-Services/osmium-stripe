@@ -70,6 +70,17 @@
                     <?php endforeach; ?>
 
                     <div class="mb-3">
+                        <label class="form-label fw-semibold">Accepted payment types</label>
+                        <?php foreach ($admin['stripe']['supportedMethods'] as $methodId => $methodLabel): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="method-<?= $methodId ?>" name="accepted_methods[]" value="<?= $methodId ?>" <?= \in_array($methodId, $admin['stripe']['acceptedMethods'], true) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="method-<?= $methodId ?>"><?= \htmlspecialchars($methodLabel) ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                        <div class="form-text">Shown as payment badges on the site. Apple Pay and Google Pay also need your domain verified in the Stripe dashboard, so they start off.</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="statement_descriptor" class="form-label fw-semibold">Statement Descriptor</label>
                         <input type="text" class="form-control" id="statement_descriptor" name="statement_descriptor"
                             maxlength="22" value="<?= \htmlspecialchars($stripe['statementDescriptor']) ?>">

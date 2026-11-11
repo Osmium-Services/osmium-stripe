@@ -26,6 +26,7 @@ class StripePaymentProvider
             'label' => 'Stripe',
             'ready' => $client->isEnabled(),
             'frontend' => ['publishableKey' => $client->publishableKey()], // Public by design
+            'methods' => StripeConfig::acceptedMethods(), // Shown as payment badges by the theme
             'settingsRoute' => 'settings/stripe/',
             'logo' => '/assets/services/stripe/logo.png', // Shown next to the order in admin
             'paymentUrl' => [ // The logo links here; {order_ref} is the PaymentIntent id

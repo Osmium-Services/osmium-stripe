@@ -13,6 +13,12 @@ namespace Osmium\Services\Stripe\Models;
  */
 class StripeConfig
 {
+    /**
+     * Payment types this service can take, as id => label. The site picks which of them it
+     * shows customers (acceptedMethods); ids match the shop service's PaymentProviders::METHODS.
+     */
+    public const SUPPORTED_METHODS = ['visa' => 'Visa', 'mastercard' => 'Mastercard', 'amex' => 'American Express', 'apple-pay' => 'Apple Pay', 'google-pay' => 'Google Pay'];
+
     private static ?object $config = null;
     private static string $configPath = 'app/config/services/stripe.json.php';
 
@@ -72,10 +78,23 @@ class StripeConfig
         return new StripeClient(self::get());
     }
 
+    /**
+     * The payment types the site accepts through this service, in SUPPORTED_METHODS order.
+     *
+     * @return string[]
+     */
+    public static function acceptedMethods(): array
+    {
+        $chosen = (array) (self::get()->acceptedMethods ?? []);
+
+        return \array_values(\array_intersect(\array_keys(self::SUPPORTED_METHODS), $chosen));
+    }
+
     private static function defaults(): object
     {
         return (object) [
             'enabled' => false,
+            'acceptedMethods' => ['visa', 'mastercard', 'amex'],
             'mode' => 'test',
             'testPublishableKey' => '',
             'testSecretKey' => '',
