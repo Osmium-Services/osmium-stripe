@@ -1,6 +1,7 @@
 ---
 title: Take card payments with Stripe
 tags: stripe, card payments, apple pay, google pay, checkout, webhook, payments
+page: admin/settings/stripe
 ---
 
 **Stripe** takes card payments on your own checkout page. Customers are never sent away from your site.
